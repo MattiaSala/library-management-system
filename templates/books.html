@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function openEditModal(bookId, title, author) {
+      const modal = document.getElementById('editModal');
+      document.getElementById('editBookId').value = bookId;
+      document.getElementById('editTitle').value = title;
+      document.getElementById('editAuthor').value = author;
+      modal.classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+    }
+
+    function openAddModal() {
+      document.getElementById('addModal').classList.remove('hidden');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.add('hidden');
+    }
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <!-- Navbar -->
+  <nav class="bg-blue-600 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+      <h1 class="text-xl font-bold">Library Books</h1>
+      <form method="POST" action="/logout">
+        <button type="submit" class="bg-red-500 px-4 py-1 rounded shadow hover:bg-red-600">
+          Logout
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mx-auto mt-10">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-3xl font-bold">Library Books</h1>
+      {% if session.role == "admin" %}
+      <button 
+        type="button" 
+        class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
+        onclick="openAddModal()">
+        <i class="fa fa-plus"></i> Book
+      </button>
+      {% endif %}
+    </div>
+    <table class="table-auto border-collapse w-full bg-white shadow-md rounded-lg">
+      <thead>
+        <tr class="bg-blue-600 text-white">
+          <th class="border px-4 py-2">Title</th>
+          <th class="border px-4 py-2">Author</th>
+          <th class="border px-4 py-2">Status</th>
+          <th class="border px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for book in books %}
+        <tr class="text-center">
+          <td class="border px-4 py-2">{{ book.title }}</td>
+          <td class="border px-4 py-2">{{ book.author }}</td>
+          <td class="border px-4 py-2">
+            {% if book.is_borrowed %}
+            <span class="text-red-500 font-semibold">Borrowed</span>
+            {% else %}
+            <span class="text-green-500 font-semibold">Available</span>
+            {% endif %}
+          </td>
+          <td class="border px-4 py-2">
+            {% if book.is_borrowed %}
+            <form method="POST" action="/books">
+              <input type="hidden" name="book_id" value="{{ book.id }}">
+              <input type="hidden" name="action" value="return">
+              <button type="submit" class="bg-red-500 text-white px-4 py-1 rounded">Return</button>
+            </form>
+            {% else %}
+            <form method="POST" action="/books">
+              <input type="hidden" name="book_id" value="{{ book.id }}">
+              <input type="hidden" name="action" value="borrow">
+              <button type="submit" class="bg-green-500 text-white px-4 py-1 rounded">Borrow</button>
+            </form>
+            {% endif %}
+            {% if session.role == "admin" %}
+            <div class="flex justify-center space-x-2 mt-2">
+              <!-- Edit Book -->
+              <button 
+                class="bg-yellow-500 text-white px-4 py-1 rounded"
+                onclick="openEditModal('{{ book.id }}', '{{ book.title }}', '{{ book.author }}')">
+                <i class="fa fa-pencil"></i>
+              </button>
+
+              <!-- Delete Book -->
+              <form method="POST" action="/books/delete">
+                <input type="hidden" name="book_id" value="{{ book.id }}">
+                <button type="submit" class="bg-red-700 text-white px-4 py-1 rounded hover:bg-red-800">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </form>
+            </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add Modal -->
+  <div id="addModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white p-6 rounded shadow-lg w-96">
+      <h2 class="text-xl font-bold mb-4">Add Book</h2>
+      <form method="POST" action="/books/add">
+        <div class="mb-4">
+          <label for="addTitle" class="block font-semibold mb-2">Title</label>
+          <input type="text" id="addTitle" name="title" class="w-full border px-4 py-2 rounded" required>
+        </div>
+        <div class="mb-4">
+          <label for="addAuthor" class="block font-semibold mb-2">Author</label>
+          <input type="text" id="addAuthor" name="author" class="w-full border px-4 py-2 rounded" required>
+        </div>
+        <div class="flex justify-end space-x-4">
+          <button 
+            type="button" 
+            onclick="closeAddModal()" 
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Add Book
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white p-6 rounded shadow-lg w-96">
+      <h2 class="text-xl font-bold mb-4">Edit Book</h2>
+      <form method="POST" action="/books/edit">
+        <input type="hidden" id="editBookId" name="book_id">
+        <div class="mb-4">
+          <label for="editTitle" class="block font-semibold mb-2">Title</label>
+          <input type="text" id="editTitle" name="title" class="w-full border px-4 py-2 rounded">
+        </div>
+        <div class="mb-4">
+          <label for="editAuthor" class="block font-semibold mb-2">Author</label>
+          <input type="text" id="editAuthor" name="author" class="w-full border px-4 py-2 rounded">
+        </div>
+        <div class="flex justify-end space-x-4">
+          <button 
+            type="button" 
+            onclick="closeEditModal()" 
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Confirm
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
+

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div class="container mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-4">Admin Panel</h1>
+
+    <!-- Add New Book Form -->
+    <div class="bg-white p-6 shadow-md rounded-lg mb-6">
+      <h2 class="text-2xl font-bold mb-4">Add a New Book</h2>
+      <form method="POST" action="/admin/add">
+        <div class="mb-4">
+          <label for="title" class="block text-gray-700">Title</label>
+          <input type="text" id="title" name="title" class="border w-full p-2 rounded">
+        </div>
+        <div class="mb-4">
+          <label for="author" class="block text-gray-700">Author</label>
+          <input type="text" id="author" name="author" class="border w-full p-2 rounded">
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Book</button>
+      </form>
+    </div>
+
+    <!-- Existing Books -->
+    <div class="bg-white p-6 shadow-md rounded-lg">
+      <h2 class="text-2xl font-bold mb-4">Manage Books</h2>
+      <table class="table-auto border-collapse w-full">
+        <thead>
+          <tr class="bg-blue-600 text-white">
+            <th class="border px-4 py-2">Title</th>
+            <th class="border px-4 py-2">Author</th>
+            <th class="border px-4 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for book in books %}
+          <tr class="text-center">
+            <td class="border px-4 py-2">{{ book.title }}</td>
+            <td class="border px-4 py-2">{{ book.author }}</td>
+            <td class="border px-4 py-2">
+              <form method="POST" action="/admin/delete/{{ book.id }}" style="display:inline;">
+                <button type="submit" class="bg-red-500 text-white px-4 py-1 rounded">Delete</button>
+              </form>
+              <form method="GET" action="/admin/edit/{{ book.id }}" style="display:inline;">
+                <button type="submit" class="bg-yellow-500 text-white px-4 py-1 rounded">Edit</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
