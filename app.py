@@ -55,8 +55,11 @@ def login():
 
             return redirect(url_for('books'))
         else:
-            print("Invalid credentials. Please try again.")
-            flash("Invalid credentials. Please try again.", "error")
+            print(response.status_code)
+            message = response.json()["message"]
+            #print("Invalid credentials. Please try again.")
+            #flash("Invalid credentials. Please try again.", "error")
+            flash(message, "error")
     return render_template("login.html")
 
 @app.route("/logout", methods=["POST"])
