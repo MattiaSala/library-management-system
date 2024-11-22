@@ -6,27 +6,7 @@
   <title>Books</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    function openEditModal(bookId, title, author) {
-      const modal = document.getElementById('editModal');
-      document.getElementById('editBookId').value = bookId;
-      document.getElementById('editTitle').value = title;
-      document.getElementById('editAuthor').value = author;
-      modal.classList.remove('hidden');
-    }
-
-    function closeEditModal() {
-      document.getElementById('editModal').classList.add('hidden');
-    }
-
-    function openAddModal() {
-      document.getElementById('addModal').classList.remove('hidden');
-    }
-
-    function closeAddModal() {
-      document.getElementById('addModal').classList.add('hidden');
-    }
-  </script>
+  <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
 
@@ -100,8 +80,10 @@
               </button>
 
               <!-- Delete Book -->
-              <form method="POST" action="/books/delete">
+              <form method="POST" action="/books">
+                <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="book_id" value="{{ book.id }}">
+                
                 <button type="submit" class="bg-red-700 text-white px-4 py-1 rounded hover:bg-red-800">
                   <i class="fa fa-trash"></i>
                 </button>
@@ -119,7 +101,9 @@
   <div id="addModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
     <div class="bg-white p-6 rounded shadow-lg w-96">
       <h2 class="text-xl font-bold mb-4">Add Book</h2>
-      <form method="POST" action="/books/add">
+      <form method="POST" action="/books">
+        <input type="hidden" name="action" value="add">
+
         <div class="mb-4">
           <label for="addTitle" class="block font-semibold mb-2">Title</label>
           <input type="text" id="addTitle" name="title" class="w-full border px-4 py-2 rounded" required>
@@ -150,7 +134,9 @@
     <div class="bg-white p-6 rounded shadow-lg w-96">
       <h2 class="text-xl font-bold mb-4">Edit Book</h2>
       <form method="POST" action="/books/edit">
+        <input type="hidden" name="action" value="edit">
         <input type="hidden" id="editBookId" name="book_id">
+
         <div class="mb-4">
           <label for="editTitle" class="block font-semibold mb-2">Title</label>
           <input type="text" id="editTitle" name="title" class="w-full border px-4 py-2 rounded">

@@ -66,8 +66,8 @@ def logout():
     flash("Logged out successfully.", "info")
     return redirect(url_for('login'))
 
-@app.route("/books", methods=["GET", "POST"])
-def books():
+@app.route("/boooks", methods=["GET", "POST"])
+def boooks():
     """List all books."""
     if 'jwt_token' not in session:
         flash("You need to log in first.", "warning")
@@ -106,8 +106,6 @@ def books():
     return render_template("books.html", books=books['books'])
 
 
-#@app.route("/return", methods=["GET"])
-
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     """Admin actions: Add, Update, Delete books."""
@@ -124,7 +122,8 @@ def admin():
                 "borrowed": False
             }
             response = requests.post(f"{API_BASE_URL}/books", json=data, headers=get_headers())
-        elif action == "update":
+
+        elif action == "edit":
             book_id = request.form['book_id']
             data = {
                 "title": request.form['title'],
@@ -132,6 +131,7 @@ def admin():
                 "borrowed": request.form.get('borrowed', 'false') == 'true'
             }
             response = requests.put(f"{API_BASE_URL}/books/{book_id}", json=data, headers=get_headers())
+
         elif action == "delete":
             book_id = request.form['book_id']
             response = requests.delete(f"{API_BASE_URL}/books/{book_id}", headers=get_headers())
@@ -144,7 +144,80 @@ def admin():
 
     response = requests.get(f"{API_BASE_URL}/books", headers=get_headers())
     books = response.json() if response.status_code == 200 else []
+
     return render_template("admin.html", books=books)
+
+
+@app.route("/books", methods=["GET", "POST"])
+def books():
+    """Manage books: Borrow, Return, Add, Edit, Delete."""
+    if 'jwt_token' not in session:
+        flash("You need to log in first.", "warning")
+        return redirect(url_for('login'))
+
+    # Fetch books list
+    response = requests.get(f"{API_BASE_URL}/books", headers=get_headers())
+    #print(f"IN BOOKS RESPONSE TEXT --->{response.text}")
+    #print(f"IN BOOKS RESPONSE CODE --->{response.status_code}")
+    books = response.json() if response.status_code == 200 else []
+
+    if request.method == "POST":
+        action = request.form['action']
+
+        # Handle Borrow and Return
+        if action in ["borrow", "return"]:
+            book_id = request.form['book_id']
+            endpoint = f"{API_BASE_URL}/books/{book_id}/{action}"
+            response = requests.post(endpoint, headers=get_headers())
+            if response.status_code == 400:
+                flash(f"Book already {action}ed!", "error")
+            elif response.status_code == 200:
+                flash(f"Book {action}ed successfully!", "success")
+            else:
+                flash(response.json().get('message', 'An error occurred.'), "error")
+
+        # Handle Add
+        elif action == "add":
+            data = {
+                "title": request.form['title'],
+                "author": request.form['author'],
+                "borrowed": False
+            }
+            response = requests.post(f"{API_BASE_URL}/books", json=data, headers=get_headers())
+            if response.status_code in [200, 201]:
+                flash("Book added successfully!", "success")
+            else:
+                flash(response.json().get('message', 'An error occurred while adding the book.'), "error")
+
+        # Handle Edit
+        elif action == "edit":
+            book_id = request.form['book_id']
+            data = {
+                "title": request.form['title'],
+                "author": request.form['author'],
+                "borrowed": request.form.get('borrowed', 'false') == 'true'
+            }
+            response = requests.put(f"{API_BASE_URL}/books/{book_id}", json=data, headers=get_headers())
+            if response.status_code == 200:
+                flash("Book updated successfully!", "success")
+            else:
+                flash(response.json().get('message', 'An error occurred while updating the book.'), "error")
+
+        # Handle Delete
+        elif action == "delete":
+            book_id = request.form['book_id']
+            print(f"DELETING BOOK with ID --> {book_id}\n\n")
+            response = requests.delete(f"{API_BASE_URL}/books/{book_id}", headers=get_headers())
+            if response.status_code == 200:
+                flash("Book deleted successfully!", "success")
+            else:
+                flash(response.json().get('message', 'An error occurred while deleting the book.'), "error")
+
+        return redirect(url_for('books'))
+
+    return render_template("books.html", books=books['books'])
+
+
 
 # -----------------
 # Run Application
