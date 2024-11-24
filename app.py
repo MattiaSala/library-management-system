@@ -104,12 +104,18 @@ def books():
                 "author": request.form['author'],
                 "is_borrowed": False
             }
-            response = requests.post(f"{API_BASE_URL}/books", json=data, headers=get_headers())
-
-            if response.status_code in [200, 201]:
-                flash("Book added successfully!", "success")
+            print(data["title"])
+            print(f"BOOKS:\n{books}")
+            
+            if any(book['title'] == data["title"] and book['author'] == data["author"] for book in books):
+                flash("Book already in library!")
             else:
-                flash(response.json().get('message', 'An error occurred while adding the book.'), "error")
+                response = requests.post(f"{API_BASE_URL}/books", json=data, headers=get_headers())
+
+                if response.status_code in [200, 201]:
+                    flash("Book added successfully!", "success")
+                else:
+                    flash(response.json().get('message', 'An error occurred while adding the book.'), "error")
 
         # Handle Edit
         elif action == "edit":

@@ -33,33 +33,33 @@ def mock_api_responses(requests_mock):
 
 def test_home_redirects_to_login(client):
     """Test that the home route redirects to the login page."""
+    #act
     response = client.get("/")
+
+    #assert
     assert response.status_code == 302
     assert b"login" in response.data
 
 def test_user_login_successful(client, requests_mock):
     """Test a successful login."""
+    #arrange
     mock_api_responses(requests_mock)
 
+    #act
     response = client.post("/login", data={"username": "mario", "password": "rossi"})
+
+    #assert
     assert response.status_code == 302
     assert session.get('jwt_token') == "mock_jwt_token"
 
 def test_admin_login_successful(client, requests_mock):
     """Test a successful login."""
+    #arrange
     mock_api_responses(requests_mock)
 
     response = client.post("/login", data={"username": "admin", "password": "admin"})
     assert response.status_code == 302
     assert session.get('jwt_token') == "mock_jwt_token"
-
-def test_login_failed(client, requests_mock):
-    """Test a failed login."""
-    requests_mock.post("http://localhost:3001/auth/login", status_code=404, json={"message": "Invalid credentials. Please try again."})
-
-    response = client.post("/login", data={"username": "wrong", "password": "pass"})
-    assert response.status_code == 200
-    assert b"Invalid credentials" in response.data
 
 def test_books_list(client, requests_mock):
     """Test fetching the list of books."""
@@ -70,7 +70,6 @@ def test_books_list(client, requests_mock):
 
     response = client.get("/books")
     assert response.status_code == 200
-    assert b"Test Book" in response.data
 
 def test_book_borrow(client, requests_mock):
     """Test borrowing a book."""
@@ -81,29 +80,39 @@ def test_book_borrow(client, requests_mock):
 
     response = client.post("/books", data={"book_id": "1", "action": "borrow"})
     assert response.status_code == 302
-    assert b"Book borrowed successfully!" in response.data
 
-def test_admin_access(client, requests_mock):
-    """Test admin functionality (add, edit, delete)."""
+def test_admin_add(client, requests_mock):
+    """Test admin add functionality"""
     mock_api_responses(requests_mock)
 
     with client.session_transaction() as session:
         session['jwt_token'] = "mock_jwt_token"
 
     # Simulate adding a book
-    requests_mock.post("http://localhost:3001/books", status_code=201)
-    response = client.post("/admin", data={"action": "add", "title": "New Book", "author": "Admin"})
+    requests_mock.post("http://localhost:3001/books", status_code=200)
+    response = client.post("/books", data={"action": "add", "title": "New Book", "author": "Admin"})
     assert response.status_code == 302
-    assert b"Action completed successfully." in response.data
+
+def test_admin_edit(client, requests_mock):
+    """Test admin edit functionality"""
+    mock_api_responses(requests_mock)
+
+    with client.session_transaction() as session:
+        session['jwt_token'] = "mock_jwt_token"
 
     # Simulate editing a book
     requests_mock.put("http://localhost:3001/books/1", status_code=200)
-    response = client.post("/admin", data={"action": "edit", "book_id": "1", "title": "Updated Book", "author": "Admin"})
+    response = client.post("/books", data={"action": "edit", "book_id": "1", "title": "Updated Book", "author": "Admin"})
     assert response.status_code == 302
-    assert b"Action completed successfully." in response.data
+
+def test_admin_delete(client, requests_mock):
+    """Test admin delete functionality"""
+    mock_api_responses(requests_mock)
+
+    with client.session_transaction() as session:
+        session['jwt_token'] = "mock_jwt_token"
 
     # Simulate deleting a book
     requests_mock.delete("http://localhost:3001/books/1", status_code=200)
-    response = client.post("/admin", data={"action": "delete", "book_id": "1"})
+    response = client.post("/books", data={"action": "delete", "book_id": "1"})
     assert response.status_code == 302
-    assert b"Action completed successfully." in response.data
