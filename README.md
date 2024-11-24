@@ -1,6 +1,6 @@
 # Library Management System
 
-This is a Flask-based Library Management System where users can log in, manage books (borrow, return, add, edit, delete), and perform authentication with JWT (JSON Web Token). It interacts with a Mock API to manage book data, ensuring the user can only perform actions if they are logged in.
+This is a Flask-based Library Management System where users can log in, manage books (borrow, return, add, edit, delete), and perform authentication with JWT (JSON Web Token). It interacts with a Mock API to manage book data, ensuring the user can only perform actions if they are logged in and based on their roles.
 
 ## Features
 
@@ -15,10 +15,11 @@ This is a Flask-based Library Management System where users can log in, manage b
   
 ## Technologies Used
 
-- **Flask**: A Python micro-framework used for building the web app.
+- **Flask**: A Python framework used for building the web app.
 - **JWT**: For secure authentication.
-- **Mock API**: A simulated backend (using Mockoon or another mock API tool) to handle book data.
-- **HTML**: For frontend rendering of pages (login and books management).
+- **Mockoon**: A simulated backend to mock API calls.
+- **PyTest**: Python library for performing Unit-tests.
+- **HTML and TailwindCSS**: For frontend rendering of pages (login and books management).
 
 ## Prerequisites
 
@@ -32,32 +33,72 @@ Before running the application, ensure you have the following installed:
 To install the required Python packages, run:
 
 ```bash
+venv -m venv venv
+
+venv\Scripts\Activate.ps1 # if using Windows
+
+source ./venv/bin/activate # if using Linux or MacOS
+
 pip install -r requirements.txt
 ```
 
 ## 🚀 Usage
+### Run the Backend
+To run the backend:
+1. Open **Mockoon**
+2. File > Open local enviroment
+3. Select the `v3.json` file contained in the `./backend-config` folder
+4. Start the server
 
-Make sure you have [npx](https://www.npmjs.com/package/npx) installed (`npx` is shipped by default since npm `5.2.0`)
 
-Just run the following command at the root of your project and answer questions:
+### Run Locally
+To run the Flask application locally:
 
-```sh
-npx readme-md-generator
+1. Create a Virtual enviroment `venv` and activate it:
+```bash
+venv -m venv venv
+
+venv\Scripts\Activate.ps1 # if using Windows Powershell
+
+source ./venv/bin/activate # if using Linux or MacOS
+
 ```
 
-Or use default values for all questions (`-y`):
 
-```sh
-npx readme-md-generator -y
+2. Install requirements from the `requirements.txt` file:
+```bash
+pip install -r requirements.txt
 ```
 
-Use your own `ejs` README template (`-p`):
-
-```sh
-npx readme-md-generator -p path/to/my/own/template.md
+3. To run the Flask application use:
+ ```bash
+flask --app app run
 ```
 
-You can find [ejs README template examples here](https://github.com/kefranabg/readme-md-generator/tree/master/templates).
+4. Open the web browser at:
+```bash
+http://localhost:5000
+```
+
+### 🐋 Use Docker
+To run the application using Docker:
+1. Go to the `app.py` file and put your local machine `ip address` in `API_BASE_URL`.
+
+2. Build Docker image
+ ```bash
+docker build -t flask-app
+```
+
+3. Run container in detached mode
+ ```bash
+docker run -d -p 5000:5000 --name flask-container flask-app
+```
+
+4. Open app in web browser
+ ```bash
+http://<your-ip-address>:5000
+```
+
 
 ## Run the unit tests
 To run the unit tests digit in the terminal:
@@ -65,15 +106,25 @@ To run the unit tests digit in the terminal:
 pytest tests\test.py
 ```
 The unit tests are provided for:
-- Authentication
-- Borrowing of a book
-- Returning of a borrowed book
-- Add of a new book
-- Edit of a new book
-- Delete of a new book
+- Authentication (`test`)
+- Borrowing of a book (``)
+- Returning of a borrowed book (``)
+- Add of a new book (``)
+- Edit of a new book (``)
+- Delete of a new book (``)
 
 ## Assumptions
-Put here all the assumptions...
+### Endpoints
+- `ALL /*`
+- `POST /auth/login`
+- `CRUD /books`
+  
+  CRUD operations are mocked in the backend by making use of "CRUD routes" of Mockoon that handles the data of Book databucket automatically. (For more details on how Mockoon manages the CRUD operations: )
+
+- `POST /books/:id/borrow`
+- `POST /books/:id/return`
+- 
+- 
 
 
 ## Author
@@ -82,10 +133,3 @@ Put here all the assumptions...
 
 - X: [@iammattsala](https://twitter.com/iammattsala)
 - Github: [@MattiaSala](https://github.com/MattiaSala)
-
-## 📝 License
-
-Copyright © 2019 [Mattia Sala](https://github.com/MattiaSala).<br />
-This project is [MIT](https://github.com/kefranabg/readme-md-generator/blob/master/LICENSE) licensed.
-
-

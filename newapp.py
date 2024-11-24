@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # Mock API base URL
-API_BASE_URL = "http://localhost:3001"  # Replace with your Mockoon API URL
+API_BASE_URL = "http://<your-machine-ip-address>:3001"  # Replace with your Mockoon API URL
 
 # -----------------
 # Helper Functions
@@ -84,11 +84,8 @@ def books():
         print(f"IN BOOKS RESPONSE CODE --->{response.status_code}")
 
         books = response.json() if response.status_code == 200 else []"""
-    print("------------ EGG --------")
     response = requests.get(f"{API_BASE_URL}/books", headers=get_headers())
-    print("GET /books\-----------------n\n")
-    print(f"IN BOOKS RESPONSE TEXT --->{response.text}")
-    print(f"IN BOOKS RESPONSE CODE --->{response.status_code}")
+
 
     #books = response.json() if response.status_code == 200 else []
     books = json.loads(response.text) if response.status_code == 200 else []
