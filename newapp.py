@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # Mock API base URL
-API_BASE_URL = "http://<your-machine-ip-address>:3001"  # Replace with your Mockoon API URL
+API_BASE_URL = "http://localhost:3001"  # Replace with your Mockoon API URL
 
 # -----------------
 # Helper Functions
@@ -99,7 +99,7 @@ def books():
             book_id = request.form['book_id']
             endpoint = f"{API_BASE_URL}/books/{book_id}/{action}"
             response = requests.post(endpoint, headers=get_headers())
-            print("POST /books/id/borrow\n-----------------\n")
+            #print("POST /books/id/borrow\n-----------------\n")
 
             if response.status_code == 400:
                 flash(f"Book already {action}ed!", "error")
