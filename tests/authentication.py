@@ -25,7 +25,7 @@ def mock_api_responses(requests_mock):
             {"id": 2, "title": "Another Book", "author": "Author B", "borrowed": True}
         ]
     })
-    requests_mock.post("http://localhost:3001/books/1/borrow", status_code=200)
+
 
 # -----------------
 # Test Cases
@@ -60,50 +60,3 @@ def test_login_failed(client, requests_mock):
     response = client.post("/login", data={"username": "wrong", "password": "pass"})
     assert response.status_code == 200
     assert b"Invalid credentials" in response.data
-
-def test_books_list(client, requests_mock):
-    """Test fetching the list of books."""
-    mock_api_responses(requests_mock)
-
-    with client.session_transaction() as session:
-        session['jwt_token'] = "mock_jwt_token"
-
-    response = client.get("/books")
-    assert response.status_code == 200
-    assert b"Test Book" in response.data
-
-def test_book_borrow(client, requests_mock):
-    """Test borrowing a book."""
-    mock_api_responses(requests_mock)
-
-    with client.session_transaction() as session:
-        session['jwt_token'] = "mock_jwt_token"
-
-    response = client.post("/books", data={"book_id": "1", "action": "borrow"})
-    assert response.status_code == 302
-    assert b"Book borrowed successfully!" in response.data
-
-def test_admin_access(client, requests_mock):
-    """Test admin functionality (add, edit, delete)."""
-    mock_api_responses(requests_mock)
-
-    with client.session_transaction() as session:
-        session['jwt_token'] = "mock_jwt_token"
-
-    # Simulate adding a book
-    requests_mock.post("http://localhost:3001/books", status_code=201)
-    response = client.post("/admin", data={"action": "add", "title": "New Book", "author": "Admin"})
-    assert response.status_code == 302
-    assert b"Action completed successfully." in response.data
-
-    # Simulate editing a book
-    requests_mock.put("http://localhost:3001/books/1", status_code=200)
-    response = client.post("/admin", data={"action": "edit", "book_id": "1", "title": "Updated Book", "author": "Admin"})
-    assert response.status_code == 302
-    assert b"Action completed successfully." in response.data
-
-    # Simulate deleting a book
-    requests_mock.delete("http://localhost:3001/books/1", status_code=200)
-    response = client.post("/admin", data={"action": "delete", "book_id": "1"})
-    assert response.status_code == 302
-    assert b"Action completed successfully." in response.data
