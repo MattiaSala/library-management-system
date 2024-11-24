@@ -95,30 +95,35 @@ To run the unit tests digit in the terminal:
 pytest tests\test.py
 ```
 The unit tests are provided for:
-- Authentication (`test`)
-- Borrowing of a book (``)
-- Returning of a borrowed book (``)
-- Add of a new book (``)
-- Edit of a new book (``)
-- Delete of a new book (``)
+- Authentication
+- Borrowing of a book 
+- Returning of a borrowed book 
+- Add of a new book
+- Edit of a new book
+- Delete of a new book
 
 ## Assumptions
+### Users
+The users are simulated with rules in Mockoon. The users are:
+`username = mario` and `password = rossi` which has `user` permissions: Borrow and Return.
+`username = admin` and `password = admin` which has `admin` permissions: Borrow, Return, Add, Edit, Delete.
+
 ### Endpoints
 - `ALL /*`
 - `POST /auth/login`
 - `CRUD /books`
+  - `GET /books`: list all the books
+  - `POST /books` : to simulate the adding of a new book
+  - `PUT /books/:id`: to simulate the edit of a book
+  - `DELETE /books/:id`: to simulate the deletion of a book
   
   CRUD operations are mocked in the backend by making use of "CRUD routes" of Mockoon that handles the data of Book databucket automatically. (For more details on how Mockoon manages the CRUD operations: )
 
-- `POST /books/:id/borrow`
-- `POST /books/:id/return`
-- 
-- 
+- `POST /books/:id/borrow`: borrowing of a book
+- `POST /books/:id/return`: returning of a borrowed book.
 
 
 ## Author
 
 👤 **Mattia Sala**
-
-- X: [@iammattsala](https://twitter.com/iammattsala)
 - Github: [@MattiaSala](https://github.com/MattiaSala)
