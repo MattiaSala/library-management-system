@@ -1,0 +1,340 @@
+{
+    "uuid": "5e4be9d3-362d-4b39-b90a-f3dde22eaecd",
+    "lastMigration": 33,
+    "name": "Library API",
+    "endpointPrefix": "",
+    "latency": 0,
+    "port": 3001,
+    "hostname": "",
+    "folders": [],
+    "routes": [
+      {
+        "uuid": "b8885086-99d9-47db-9b0a-851ed920efe3",
+        "type": "http",
+        "documentation": "",
+        "method": "post",
+        "endpoint": "auth/login",
+        "responses": [
+          {
+            "uuid": "53e43805-57d7-4a2d-8238-a227f4063c7c",
+            "body": "{\r\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\",\r\n  \"expire_in_sec\":\"3600\"\r\n}",
+            "latency": 0,
+            "statusCode": 200,
+            "label": "",
+            "headers": [],
+            "bodyType": "DATABUCKET",
+            "filePath": "",
+            "databucketID": "dxfp",
+            "sendFileAsBody": false,
+            "rules": [
+              {
+                "target": "body",
+                "modifier": "username",
+                "value": "mario",
+                "invert": false,
+                "operator": "equals"
+              },
+              {
+                "target": "body",
+                "modifier": "password",
+                "value": "rossi",
+                "invert": false,
+                "operator": "equals"
+              }
+            ],
+            "rulesOperator": "AND",
+            "disableTemplating": false,
+            "fallbackTo404": false,
+            "default": true,
+            "crudKey": "id",
+            "callbacks": []
+          },
+          {
+            "uuid": "a546c11d-838e-414d-85ec-3d96f97e1081",
+            "body": "{}",
+            "latency": 0,
+            "statusCode": 400,
+            "label": "",
+            "headers": [],
+            "bodyType": "INLINE",
+            "filePath": "",
+            "databucketID": "",
+            "sendFileAsBody": false,
+            "rules": [
+              {
+                "target": "body",
+                "modifier": "",
+                "value": "",
+                "invert": false,
+                "operator": "empty_array"
+              }
+            ],
+            "rulesOperator": "OR",
+            "disableTemplating": false,
+            "fallbackTo404": false,
+            "default": false,
+            "crudKey": "id",
+            "callbacks": []
+          },
+          {
+            "uuid": "0cc298a3-f948-40a3-a419-b57b6caf23a3",
+            "body": "{}",
+            "latency": 0,
+            "statusCode": 401,
+            "label": "",
+            "headers": [],
+            "bodyType": "INLINE",
+            "filePath": "",
+            "databucketID": "",
+            "sendFileAsBody": false,
+            "rules": [
+              {
+                "target": "body",
+                "modifier": "username",
+                "value": "mario",
+                "invert": true,
+                "operator": "equals"
+              },
+              {
+                "target": "body",
+                "modifier": "password",
+                "value": "rossi",
+                "invert": true,
+                "operator": "equals"
+              }
+            ],
+            "rulesOperator": "AND",
+            "disableTemplating": false,
+            "fallbackTo404": false,
+            "default": false,
+            "crudKey": "id",
+            "callbacks": []
+          }
+        ],
+        "responseMode": null,
+        "streamingMode": null,
+        "streamingInterval": 0
+      },
+      {
+        "uuid": "2bb3693e-2221-44ca-931c-c1588516c4b6",
+        "type": "http",
+        "documentation": "",
+        "method": "get",
+        "endpoint": "books",
+        "responses": [
+          {
+            "uuid": "cfd23fbb-87ac-47d6-89fe-b689a5938a5f",
+            "body": "{\r\n  \"books\" : \r\n  [\r\n    {\r\n      \"id\": 1,\r\n      \"title\": \"The Great Gatsby\",\r\n      \"author\": \"F. Scott Fitzgerald\",\r\n      \"is_borrowed\": false\r\n    },\r\n    {\r\n      \"id\": 2,\r\n      \"title\": \"1984\",\r\n      \"author\": \"George Orwell\",\r\n      \"is_borrowed\": true\r\n    }\r\n  ]\r\n}",
+            "latency": 0,
+            "statusCode": 200,
+            "label": "",
+            "headers": [],
+            "bodyType": "DATABUCKET",
+            "filePath": "",
+            "databucketID": "s0fx",
+            "sendFileAsBody": false,
+            "rules": [],
+            "rulesOperator": "AND",
+            "disableTemplating": false,
+            "fallbackTo404": false,
+            "default": true,
+            "crudKey": "id",
+            "callbacks": []
+          }
+        ],
+        "responseMode": null,
+        "streamingMode": null,
+        "streamingInterval": 0
+      },
+      {
+        "uuid": "c728d792-1801-4f74-a99f-661a3fedb746",
+        "type": "http",
+        "documentation": "",
+        "method": "post",
+        "endpoint": "books/:id/borrow",
+        "responses": [
+          {
+            "uuid": "853102af-98af-4b29-8a53-46347ceb792b",
+            "body": "{{#switch (urlParam 'id')}}\n  {{#case '0'}}{{setData 'set' 'Books' 'books.0.is_borrowed' true}}{{/case}}\n  {{#case '1'}}{{setData 'set' 'Books' 'books.1.is_borrowed' true}}{{/case}}\n{{/switch}}",
+            "latency": 0,
+            "statusCode": 200,
+            "label": "",
+            "headers": [],
+            "bodyType": "INLINE",
+            "filePath": "",
+            "databucketID": "sk2v",
+            "sendFileAsBody": false,
+            "rules": [],
+            "rulesOperator": "OR",
+            "disableTemplating": false,
+            "fallbackTo404": false,
+            "default": true,
+            "crudKey": "id",
+            "callbacks": []
+          }
+        ],
+        "responseMode": null,
+        "streamingMode": null,
+        "streamingInterval": 0
+      },
+      {
+        "uuid": "072e5e29-aae0-431c-b5b2-bd79e8535058",
+        "type": "http",
+        "documentation": "",
+        "method": "post",
+        "endpoint": "books/:id/return",
+        "responses": [
+          {
+            "uuid": "40b5b353-8283-4693-8c02-54ff7cc09601",
+            "body": "{{#switch (urlParam 'id')}}\n  {{#case '0'}}{{setData 'set' 'Books' 'books.0.is_borrowed' false}}{{/case}}\n  {{#case '1'}}{{setData 'set' 'Books' 'books.1.is_borrowed' false}}{{/case}}\n{{/switch}}",
+            "latency": 0,
+            "statusCode": 200,
+            "label": "",
+            "headers": [],
+            "bodyType": "INLINE",
+            "filePath": "",
+            "databucketID": "",
+            "sendFileAsBody": false,
+            "rules": [],
+            "rulesOperator": "OR",
+            "disableTemplating": false,
+            "fallbackTo404": false,
+            "default": true,
+            "crudKey": "id",
+            "callbacks": []
+          }
+        ],
+        "responseMode": null,
+        "streamingMode": null,
+        "streamingInterval": 0
+      },
+      {
+        "uuid": "6946ad40-da30-4835-ae0b-be1d22ab9501",
+        "type": "http",
+        "documentation": "",
+        "method": "all",
+        "endpoint": "*",
+        "responses": [
+          {
+            "uuid": "315f5121-4886-4237-9ebd-02a145d19696",
+            "body": "",
+            "latency": 0,
+            "statusCode": 401,
+            "label": "",
+            "headers": [],
+            "bodyType": "INLINE",
+            "filePath": "",
+            "databucketID": "",
+            "sendFileAsBody": false,
+            "rules": [
+              {
+                "target": "header",
+                "modifier": "Authorization",
+                "value": "Bearer {{data 'Token' 'token'}}",
+                "invert": true,
+                "operator": "equals"
+              }
+            ],
+            "rulesOperator": "OR",
+            "disableTemplating": false,
+            "fallbackTo404": false,
+            "default": true,
+            "crudKey": "id",
+            "callbacks": []
+          }
+        ],
+        "responseMode": "FALLBACK",
+        "streamingMode": null,
+        "streamingInterval": 0
+      }
+    ],
+    "rootChildren": [
+      {
+        "type": "route",
+        "uuid": "b8885086-99d9-47db-9b0a-851ed920efe3"
+      },
+      {
+        "type": "route",
+        "uuid": "6946ad40-da30-4835-ae0b-be1d22ab9501"
+      },
+      {
+        "type": "route",
+        "uuid": "c728d792-1801-4f74-a99f-661a3fedb746"
+      },
+      {
+        "type": "route",
+        "uuid": "2bb3693e-2221-44ca-931c-c1588516c4b6"
+      },
+      {
+        "type": "route",
+        "uuid": "072e5e29-aae0-431c-b5b2-bd79e8535058"
+      }
+    ],
+    "proxyMode": false,
+    "proxyHost": "",
+    "proxyRemovePrefix": false,
+    "tlsOptions": {
+      "enabled": false,
+      "type": "CERT",
+      "pfxPath": "",
+      "certPath": "",
+      "keyPath": "",
+      "caPath": "",
+      "passphrase": ""
+    },
+    "cors": true,
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Access-Control-Allow-Origin",
+        "value": "*"
+      },
+      {
+        "key": "Access-Control-Allow-Methods",
+        "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+      },
+      {
+        "key": "Access-Control-Allow-Headers",
+        "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+      }
+    ],
+    "proxyReqHeaders": [
+      {
+        "key": "",
+        "value": ""
+      }
+    ],
+    "proxyResHeaders": [
+      {
+        "key": "",
+        "value": ""
+      }
+    ],
+    "data": [
+      {
+        "uuid": "1627a74a-5def-4860-8856-b7623f3956a6",
+        "id": "s0fx",
+        "name": "Books",
+        "documentation": "",
+        "value": "{\r\n  \"books\" : \r\n  [\r\n    {\r\n      \"id\": 0,\r\n      \"title\": \"The Great Gatsby\",\r\n      \"author\": \"F. Scott Fitzgerald\",\r\n      \"is_borrowed\": false\r\n    },\r\n    {\r\n      \"id\": 1,\r\n      \"title\": \"1984\",\r\n      \"author\": \"George Orwell\",\r\n      \"is_borrowed\": true\r\n    }\r\n  ]\r\n}"
+      },
+      {
+        "uuid": "97dd7903-7cb9-4887-a3fb-11d9066d446e",
+        "id": "dxfp",
+        "name": "Token",
+        "documentation": "",
+        "value": "{\n  \"token\": \"{{faker 'string.uuid'}}\", \n  \"expires_in_sec\":\"{{int 3600 5800}}\"\n}"
+      },
+      {
+        "uuid": "1dfef9d3-337b-4ee3-8f35-6cfddefd28d6",
+        "id": "sk2v",
+        "name": "Test",
+        "documentation": "",
+        "value": "{\n  \"prova\":\"asdasd\"\n}"
+      }
+    ],
+    "callbacks": []
+  }
