@@ -43,6 +43,13 @@ To run the backend:
 ### Run Locally
 To run the Flask application locally:
 
+0. Clone the repository:
+```bash
+git clone https://github.com/MattiaSala/library-management-system.git
+
+cd library-management-system
+```
+
 1. Create a Virtual enviroment `venv` and activate it:
 ```bash
 venv -m venv venv
