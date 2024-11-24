@@ -104,8 +104,7 @@ def books():
                 "author": request.form['author'],
                 "is_borrowed": False
             }
-            print(data["title"])
-            print(f"BOOKS:\n{books}")
+            
             
             if any(book['title'] == data["title"] and book['author'] == data["author"] for book in books):
                 flash("Book already in library!")

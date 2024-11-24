@@ -21,11 +21,12 @@ def mock_api_responses(requests_mock):
     })
     requests_mock.get("http://localhost:3001/books", json={
         "books": [
-            {"id": 1, "title": "Test Book", "author": "Author A", "borrowed": False},
-            {"id": 2, "title": "Another Book", "author": "Author B", "borrowed": True}
+            {"id": 1, "title": "Test Book", "author": "Author A", "is_borrowed": False},
+            {"id": 2, "title": "Another Book", "author": "Author B", "is_borrowed": True}
         ]
     })
     requests_mock.post("http://localhost:3001/books/1/borrow", status_code=200)
+    requests_mock.post("http://localhost:3001/books/2/return", status_code=200)
 
 # -----------------
 # Test Cases
@@ -79,6 +80,16 @@ def test_book_borrow(client, requests_mock):
         session['jwt_token'] = "mock_jwt_token"
 
     response = client.post("/books", data={"book_id": "1", "action": "borrow"})
+    assert response.status_code == 302
+
+def test_book_return(client, requests_mock):
+    """Test borrowing a book."""
+    mock_api_responses(requests_mock)
+
+    with client.session_transaction() as session:
+        session['jwt_token'] = "mock_jwt_token"
+
+    response = client.post("/books", data={"book_id": "2", "action": "return"})
     assert response.status_code == 302
 
 def test_admin_add(client, requests_mock):

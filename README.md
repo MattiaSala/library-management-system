@@ -11,7 +11,7 @@ This is a Flask-based Library Management System where users can log in, manage b
   - Add new books to the collection
   - Edit book details
   - Delete books from the system
-- **Role-based access**: User roles are handled through JWT tokens to define what actions are permissible.
+- **Role-based access**: User roles are handled to define what actions are permissible.
   
 ## Technologies Used
 
@@ -25,29 +25,18 @@ This is a Flask-based Library Management System where users can log in, manage b
 
 Before running the application, ensure you have the following installed:
 
-- Python 3.10.6
+- Python 3.10.X
 - Flask
 - Requests
 - A running Mock API server (e.g., Mockoon)
 
-To install the required Python packages, run:
 
-```bash
-venv -m venv venv
-
-venv\Scripts\Activate.ps1 # if using Windows
-
-source ./venv/bin/activate # if using Linux or MacOS
-
-pip install -r requirements.txt
-```
-
-## 🚀 Usage
+##  Usage
 ### Run the Backend
 To run the backend:
 1. Open **Mockoon**
 2. File > Open local enviroment
-3. Select the `v3.json` file contained in the `./backend-config` folder
+3. Select the `v5.json` file contained in the `./backend-config` folder
 4. Start the server
 
 
