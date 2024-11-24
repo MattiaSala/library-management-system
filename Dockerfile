@@ -17,7 +17,7 @@ COPY . .
 EXPOSE 5000
 
 # Define environment variable for Flask
-ENV FLASK_APP=newapp.py
+ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
 
 # Run the application
