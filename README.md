@@ -78,11 +78,11 @@ http://localhost:5000
 
 ### 🐋 Use Docker
 To run the application using Docker:
-1. Go to the `app.py` file and put your local machine `ip address` in `API_BASE_URL`.
+1. Go to the `app.py` file and put your local machine `ip address` in `API_BASE_URL` with the correct port of the Mockoon server.
 
 2. Build Docker image
  ```bash
-docker build -t flask-app
+docker build -t flask-app .
 ```
 
 3. Run container in detached mode
